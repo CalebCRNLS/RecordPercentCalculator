@@ -8,6 +8,8 @@ WINDOW_WIDTH = 700
 WINDOW_HEIGHT = 400
 WINDOW_BORDER = 10
 
+PLAYERS_PER_PAGE = 10
+
 #Global Variables
 record = None
 players = []
@@ -16,6 +18,9 @@ record_input = None
 player_name_input = None
 player_score_input = None
 
+leaderboard_places = []
+current_page = 0
+page_label = None
 
 def float_check(num):
     try:
@@ -27,10 +32,38 @@ def float_check(num):
 
 
 def update_leaderboard():
-    for player in players:
+    global current_page
+    
+    place = 0
+    for count in range(current_page*10,(current_page*10)+10):
+        
+        if count > len(players)-1:
+            break
+        #Breaks out of the loop if it runs out of players
+        
         if record:
-            player[2] = str(round((player[1]/record)*100,2))+"%"
-        print(*player)
+            players[count][2] = str(round((players[count][1]/record)*100,2))+"%"
+        else:
+            players[count][2] = "-"
+        #Checks to see what the record is and if it needs updating.
+        
+        leaderboard_places[place][0].config(text="#"+str(count))
+        leaderboard_places[place][1].config(text=players[count][0])
+        leaderboard_places[place][2].config(text=players[count][1])
+        leaderboard_places[place][3].config(text=players[count][2])
+        #Updates each spot on the leaderboard
+        
+        place += 1
+        #Update place variable (used to track which leaderboard slot to place each player in)
+    
+    if place < PLAYERS_PER_PAGE:
+        for count in range(place,PLAYERS_PER_PAGE):
+            leaderboard_places[count][0].config(text="#"+str(count+(current_page*10)))
+            leaderboard_places[count][1].config(text="-")
+            leaderboard_places[count][2].config(text="-")
+            leaderboard_places[count][3].config(text="-")       
+    
+    page_label.config(text = str(current_page+1)+"/"+str(pages))
 #Updates the leaderboard and prints it into the output
 
 def create_entry(window,placex,placey,width,height):
@@ -88,6 +121,41 @@ def on_record_button_pressed():
     
     update_leaderboard()
 
+def on_clear_button_pressed():
+    players.clear()
+    update_leaderboard()
+    #Clears and refreshes the leaderboard.
+
+def on_page_change(direction):
+    global current_page
+    global players
+    global PLAYERS_PER_PAGE
+    global page_label
+    
+    
+    pages = round(len(players)/PLAYERS_PER_PAGE)
+    if pages < len(players)/PLAYERS_PER_PAGE:
+        pages += 1
+    #This chunk of code will round upwards.
+    
+    if pages == 0:
+        pages = 1    
+    #This code will set the number of pages to 1 if the number of pages is 0 (as 0 simply means nothing has been inputted yet)
+    
+    
+    current_page += direction
+    if current_page < 0:
+        current_page = pages - 1
+    elif current_page >= pages:
+        current_page = 0
+    
+    
+    page_label.config(text = str(current_page+1)+"/"+str(pages))
+    #Moves the current page in the direction specified. If the current page is out of range it will wrap.
+    
+    update_leaderboard()
+    #Refreshes the leaderboard.
+
 def main():
     global record
     global players
@@ -95,6 +163,8 @@ def main():
     global record_input
     global player_name_input
     global player_score_input
+    
+    global page_label
     #Global Declerations
     
     window = Tk()
@@ -111,8 +181,25 @@ def main():
     player_score_input = create_entry(window,240,50,100,20)
     player_score_label = create_label(window,240,70,100,20,"Player Score",100)
     
-    submit_button = create_button(window,WINDOW_WIDTH-20,50,20,20,"+",on_submit_button_pressed)
+    submit_button = create_button(window,350,50,20,20,"+",on_submit_button_pressed)
     #Player input fields
+    
+    height = 20
+    offset_y = 100
+    
+    for place in range(1,PLAYERS_PER_PAGE+1):
+        rank_label = create_label(window,25,offset_y+(height*place),25,height,"#"+str(place),0)
+        name_label = create_label(window,50,offset_y+(height*place),180,height,"-",0)
+        score_label = create_label(window,230,offset_y+(height*place),70,height,"-",0)
+        percent_label = create_label(window,300,offset_y+(height*place),50,height,"-",0)
+        leaderboard_places.append([rank_label,name_label,score_label,percent_label])
+    #Creates the leaderboard based on the number of players each page should have
+    
+    clear_leaderboard_button = create_button(window,25,325,150,20,"Clear Leaderboard",on_clear_button_pressed)
+        
+    prev_page_button = create_button(window,200,325,20,20,"<",lambda:on_page_change(-1))
+    page_label = create_label(window,225,325,40,20,"1/1",40)
+    next_page_button = create_button(window,270,325,20,20,">",lambda:on_page_change(1))
     
     window.mainloop()
     
