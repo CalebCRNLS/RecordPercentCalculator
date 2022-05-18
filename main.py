@@ -20,7 +20,6 @@ player_score_input = None
 
 leaderboard_places = []
 current_page = 0
-pages = 1
 page_label = None
 
 score_high_to_low = None
@@ -36,16 +35,22 @@ def float_check(num):
 def sorter(value):
     return value[1]
     
-                    
+def delete_player(position):
+    global players
+    global current_page
+    global PLAYERS_PER_PAGE
+    
+    
+    players.pop((PLAYERS_PER_PAGE*current_page)+position)
+    update_leaderboard()
 
 
 def update_leaderboard():
     global current_page
     global players
-    global pages
     global score_high_to_low
     
-    players.sort(reverse=score_high_to_low.get(),key=sorter)
+    players.sort(reverse=not score_high_to_low.get(),key=sorter)
     
     place = 0
     for count in range(current_page*10,(current_page*10)+10):
@@ -76,7 +81,9 @@ def update_leaderboard():
             leaderboard_places[count][2].config(text="-")
             leaderboard_places[count][3].config(text="-")       
     
-    page_label.config(text = str(current_page+1)+"/"+str(pages))
+    page_label.config(text = str(current_page+1)+"/"+str(count_pages()))
+    #Refreshes the page counter
+    
 #Updates the leaderboard and prints it into the output
 
 def create_entry(window,placex,placey,width,height):
@@ -144,18 +151,24 @@ def on_clear_button_pressed():
     update_leaderboard()
     #Clears and refreshes the leaderboard.
 
-def on_page_change(direction):
-    global current_page
+def count_pages():
     global players
     global PLAYERS_PER_PAGE
-    global page_label
-    global pages
-    
     
     pages = round(len(players)/PLAYERS_PER_PAGE)
     if pages < len(players)/PLAYERS_PER_PAGE:
         pages += 1
     #This chunk of code will round upwards.
+    return pages
+
+def on_page_change(direction):
+    global current_page
+    global players
+    global PLAYERS_PER_PAGE
+    global page_label
+    
+    
+    pages = count_pages()
     
     if pages == 0:
         pages = 1    
@@ -214,6 +227,9 @@ def main():
     offset_y = 100
     
     for place in range(1,PLAYERS_PER_PAGE+1):
+        delete_button = create_button(window,0,offset_y+(height*place),20,height,"X",lambda place=place :delete_player(place-1))
+        #Button for deleting individual players
+        
         rank_label = create_label(window,25,offset_y+(height*place),25,height,"-",0)
         name_label = create_label(window,50,offset_y+(height*place),180,height,"-",0)
         score_label = create_label(window,230,offset_y+(height*place),70,height,"-",0)
