@@ -4,11 +4,14 @@
 from tkinter import *
 
 #Constants
-WINDOW_WIDTH = 700
-WINDOW_HEIGHT = 400
+WINDOW_WIDTH = 375
+WINDOW_HEIGHT = 350
 WINDOW_BORDER = 10
 
 PLAYERS_PER_PAGE = 10
+
+COLOUR_RED = "#f52929"
+COLOUR_GREEN = "#73f547"
 
 #Global Variables
 record = None
@@ -119,7 +122,7 @@ def on_submit_button_pressed():
     score = player_score_input.get()
     #Fetches the player's name and score
     
-    if float_check(score):
+    if float_check(score) and player:
         score = float(score)
         if record:
             players.append([player,score,(score/record)*100])
@@ -131,8 +134,7 @@ def on_submit_button_pressed():
         player_name_input.delete(0,END)
         player_score_input.delete(0,END)
         #Clears the input fields
-    else:
-        print("Unable to read score input.")
+    
 
 
 def on_record_button_pressed():
@@ -141,8 +143,6 @@ def on_record_button_pressed():
     
     if float_check(record_input.get()):
         record = float(record_input.get())
-    else:
-        record = None
     
     update_leaderboard()
 
@@ -159,6 +159,9 @@ def count_pages():
     if pages < len(players)/PLAYERS_PER_PAGE:
         pages += 1
     #This chunk of code will round upwards.
+    
+    if pages == 0:
+        pages = 1
     return pages
 
 def on_page_change(direction):
@@ -198,15 +201,20 @@ def main():
     
     global page_label
     global score_high_to_low
+    
+    global COLOUR_RED
     #Global Declerations
     
     window = Tk()
     
     window.geometry(str(WINDOW_WIDTH+(WINDOW_BORDER*2))+"x"+str(WINDOW_HEIGHT+(WINDOW_BORDER*2)))
+    window.title("Athlete Scoreboard")
+    window.resizable(0,0)
     
     record_input = create_entry(window,0,0,50,20)
     record_input_label = create_label(window,0,20,50,20,"Record",50)
-    record_submit_button = create_button(window,60,0,20,20,"<",on_record_button_pressed)
+    record_submit_button = create_button(window,60,0,20,20,"+",on_record_button_pressed)
+    record_submit_button.config(bg = COLOUR_GREEN)
     #Record Fetching Field
     
     score_high_to_low = BooleanVar()
@@ -215,12 +223,13 @@ def main():
     #Radio buttons to decide if the list should be sorted high-to-low or low-to-high
     
     player_name_input = create_entry(window,50,50,180,20)
-    player_name_label = create_label(window,50,70,180,20,"Player Name",100)
+    player_name_label = create_label(window,50,70,180,20,"Athlete Name",100)
     
     player_score_input = create_entry(window,240,50,100,20)
-    player_score_label = create_label(window,240,70,100,20,"Player Score",100)
+    player_score_label = create_label(window,240,70,100,20,"Athlete Score",100)
     
     submit_button = create_button(window,350,50,20,20,"+",on_submit_button_pressed)
+    submit_button.config(bg = COLOUR_GREEN)
     #Player input fields
     
     height = 20
@@ -228,6 +237,7 @@ def main():
     
     for place in range(1,PLAYERS_PER_PAGE+1):
         delete_button = create_button(window,0,offset_y+(height*place),20,height,"X",lambda place=place :delete_player(place-1))
+        delete_button.config(bg = COLOUR_RED)
         #Button for deleting individual players
         
         rank_label = create_label(window,25,offset_y+(height*place),25,height,"-",0)
@@ -238,6 +248,7 @@ def main():
     #Creates the leaderboard based on the number of players each page should have
     
     clear_leaderboard_button = create_button(window,25,325,150,20,"Clear Leaderboard",on_clear_button_pressed)
+    clear_leaderboard_button.config(bg = COLOUR_RED)
     
     prev_page_button = create_button(window,200,325,20,20,"<",lambda:on_page_change(-1))
     page_label = create_label(window,225,325,40,20,"1/1",40)
