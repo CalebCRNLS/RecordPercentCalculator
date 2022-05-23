@@ -210,6 +210,7 @@ def main():
     window.geometry(str(WINDOW_WIDTH+(WINDOW_BORDER*2))+"x"+str(WINDOW_HEIGHT+(WINDOW_BORDER*2)))
     window.title("Competitor Scoreboard")
     window.resizable(0,0)
+    #Initiates the window
     
     record_input = create_entry(window,0,0,50,20)
     record_input_label = create_label(window,0,20,50,20,"Record",50)
@@ -220,7 +221,7 @@ def main():
     score_high_to_low = BooleanVar()
     sort_checkbutton = create_checkbutton(window,250,40,"Reverse Order",score_high_to_low,update_leaderboard,True,False)
     
-    #Radio buttons to decide if the list should be sorted high-to-low or low-to-high
+    #Check button to decide if the list should be sorted high-to-low or low-to-high
     
     player_name_input = create_entry(window,50,50,180,20)
     player_name_label = create_label(window,50,70,180,20,"Competitor Name",100)
@@ -234,6 +235,7 @@ def main():
     
     height = 20
     offset_y = 100
+    #Determines where the top of the scoreboard will be placed, as well as the height for each row in pixels
     
     for place in range(1,PLAYERS_PER_PAGE+1):
         delete_button = create_button(window,0,offset_y+(height*place),20,height,"X",lambda place=place :delete_player(place-1))
@@ -249,6 +251,7 @@ def main():
     
     clear_leaderboard_button = create_button(window,25,325,150,20,"Clear Leaderboard",on_clear_button_pressed)
     clear_leaderboard_button.config(bg = COLOUR_RED)
+    #Button used to clear the leaderboard
     
     prev_page_button = create_button(window,200,325,20,20,"<",lambda:on_page_change(-1))
     page_label = create_label(window,225,325,40,20,"1/1",40)
