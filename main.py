@@ -208,7 +208,7 @@ def main():
     window = Tk()
     
     window.geometry(str(WINDOW_WIDTH+(WINDOW_BORDER*2))+"x"+str(WINDOW_HEIGHT+(WINDOW_BORDER*2)))
-    window.title("Athlete Scoreboard")
+    window.title("Competitor Scoreboard")
     window.resizable(0,0)
     
     record_input = create_entry(window,0,0,50,20)
@@ -223,10 +223,10 @@ def main():
     #Radio buttons to decide if the list should be sorted high-to-low or low-to-high
     
     player_name_input = create_entry(window,50,50,180,20)
-    player_name_label = create_label(window,50,70,180,20,"Athlete Name",100)
+    player_name_label = create_label(window,50,70,180,20,"Competitor Name",100)
     
     player_score_input = create_entry(window,240,50,100,20)
-    player_score_label = create_label(window,240,70,100,20,"Athlete Score",100)
+    player_score_label = create_label(window,240,70,100,20,"Competitor Time/Distance",100)
     
     submit_button = create_button(window,350,50,20,20,"+",on_submit_button_pressed)
     submit_button.config(bg = COLOUR_GREEN)
