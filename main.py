@@ -227,7 +227,7 @@ def main():
     player_name_label = create_label(window,50,70,180,20,"Competitor Name",100)
     
     player_score_input = create_entry(window,240,50,100,20)
-    player_score_label = create_label(window,240,70,100,20,"Competitor Time/Distance",100)
+    player_score_label = create_label(window,240,70,100,30,"Competitor Time/Dist.",100)
     
     submit_button = create_button(window,350,50,20,20,"+",on_submit_button_pressed)
     submit_button.config(bg = COLOUR_GREEN)
