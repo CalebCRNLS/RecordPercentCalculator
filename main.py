@@ -212,14 +212,14 @@ def main():
     window.resizable(0,0)
     #Initiates the window
     
-    record_input = create_entry(window,0,0,50,20)
-    record_input_label = create_label(window,0,20,50,20,"Record",50)
-    record_submit_button = create_button(window,60,0,20,20,"+",on_record_button_pressed)
+    record_input = create_entry(window,240,0,100,20)
+    record_input_label = create_label(window,240,20,100,20,"Record",50)
+    record_submit_button = create_button(window,350,0,20,20,"+",on_record_button_pressed)
     record_submit_button.config(bg = COLOUR_GREEN)
     #Record Fetching Field
     
     score_high_to_low = BooleanVar()
-    sort_checkbutton = create_checkbutton(window,250,40,"Reverse Order",score_high_to_low,update_leaderboard,True,False)
+    sort_checkbutton = create_checkbutton(window,36,107,"Use Low-to-High sorting",score_high_to_low,update_leaderboard,True,False)
     
     #Check button to decide if the list should be sorted high-to-low or low-to-high
     
@@ -239,7 +239,7 @@ def main():
     
     for place in range(1,PLAYERS_PER_PAGE+1):
         delete_button = create_button(window,0,offset_y+(height*place),20,height,"X",lambda place=place :delete_player(place-1))
-        delete_button.config(bg = COLOUR_RED)
+        #delete_button.config(bg = COLOUR_RED)
         #Button for deleting individual players
         
         rank_label = create_label(window,25,offset_y+(height*place),25,height,"-",0)
