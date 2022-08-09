@@ -5,7 +5,7 @@ from tkinter import *
 
 #Constants
 WINDOW_WIDTH = 375
-WINDOW_HEIGHT = 350
+WINDOW_HEIGHT = 390
 WINDOW_BORDER = 10
 
 PLAYERS_PER_PAGE = 10
@@ -190,6 +190,29 @@ def on_page_change(direction):
     
     update_leaderboard()
     #Refreshes the leaderboard.
+    
+
+    
+def check_confirmation(window,function):
+    confirm_label = None
+    confirm_button = None
+    cancel_button = None
+    
+    def cancel_action():
+        confirm_label.destroy()
+        confirm_button.destroy()
+        cancel_button.destroy()    
+    
+    def confirm_action():
+        function()
+        cancel_action()
+        
+    
+    confirm_label = create_label(window,0,355,200,20,"Are you sure you want to do that?",200)
+    confirm_button = create_button(window,0,375,90,20,"Yes",confirm_action)
+    cancel_button = create_button(window,100,375,90,20,"No",cancel_action)
+    
+    
 
 def main():
     global record
@@ -249,7 +272,7 @@ def main():
         leaderboard_places.append([rank_label,name_label,score_label,percent_label])
     #Creates the leaderboard based on the number of players each page should have
     
-    clear_leaderboard_button = create_button(window,25,325,150,20,"Clear Leaderboard",on_clear_button_pressed)
+    clear_leaderboard_button = create_button(window,25,325,150,20,"Clear Leaderboard",lambda:check_confirmation(window,on_clear_button_pressed))
     clear_leaderboard_button.config(bg = COLOUR_RED)
     #Button used to clear the leaderboard
     
